@@ -2,14 +2,14 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
-// Configuration Firebase - Variables d'environnement
+// Configuration Firebase - Variables d'environnement avec fallback
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyBl33Ta3P7lkLmpKd7erjZhh5TqqBn4vHA",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "device-streaming-9dc16a46.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "device-streaming-9dc16a46",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "device-streaming-9dc16a46.firebasestorage.app",
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "227467608009",
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:227467608009:web:60cb14daf673046be23218",
 };
 
 // Validation de la configuration
