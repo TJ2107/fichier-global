@@ -1,53 +1,87 @@
-# ✅ Automatisation Firebase sur Netlify - COMPLÈTE
+# ✅ Automatisation Firebase sur Netlify - SCRIPT AUTOMATIQUE DISPONIBLE
 
-## 🎯 Statut
+## 🎯 Statut Actuel
 
-**Tout est maintenant automatique!** ✨
+**Option 1 (Automatique):** Utilisez le script `setup-netlify-env.sh`  
+**Option 2 (Manuelle):** Configuration via interface Netlify
 
-Les variables Firebase sont configurées directement dans `netlify.toml` et se déploieront automatiquement.
-
----
-
-## 🔄 Ce Qui s'est Passé
-
-1. ✅ Variables Firebase ajoutées dans `netlify.toml`
-2. ✅ Configuration poussée vers GitHub
-3. ✅ Netlify redéploie automatiquement (en cours)
+Les variables Firebase ont été supprimées de `netlify.toml` pour respecter la sécurité Netlify.
 
 ---
 
-## ⏱️ Prochaines Étapes Automatiques
+## 🚀 Option 1: Configuration Automatique (Recommandée)
 
-### Dans 2-5 minutes:
+### Exécution du Script Automatique
 
-1. **Netlify détecte** la mise à jour GitHub
-2. **Build automatique** se déclenche
-3. **Variables Firebase** sont injectées
-4. **Déploiement** en production
+```bash
+# Rendez-vous dans le répertoire du projet
+cd /workspaces/fichier-global
 
-### Rien à faire manuellement! 🚀
+# Exécutez le script automatique
+./setup-netlify-env.sh
+```
+
+**Ce que fait le script:**
+1. ✅ Vérifie et installe Netlify CLI si nécessaire
+2. 🔐 Vous guide pour l'authentification Netlify
+3. 🏠 Détecte automatiquement votre site
+4. 🔑 Configure toutes les variables Firebase
+5. 🚀 Déclenche un nouveau build automatiquement
 
 ---
 
-## ✅ Vérification
+## 🔄 Option 2: Configuration Manuelle
 
-Dans quelques minutes, allez sur:
+### Étape 1: Accéder à Netlify
+Allez sur https://app.netlify.com → Votre site → **Site settings**
 
-1. https://app.netlify.com → Votre site → Deploys
-2. Vous verrez un nouveau déploiement en cours
-3. Une fois complété → Votre site fonctionnera! ✨
+### Étape 2: Configurer les Variables d'Environnement
+- **Build & deploy** → **Environment** → **Environment variables**
+- Cliquez **Add variable** pour chaque variable:
 
-Ou ouvrez votre site directement et appuyez sur **F12** pour vérifier la console:
+```
+VITE_FIREBASE_API_KEY = AIzaSyBl33Ta3P7lkLmpKd7erjZhh5TqqBn4vHA
+VITE_FIREBASE_AUTH_DOMAIN = device-streaming-9dc16a46.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID = device-streaming-9dc16a46
+VITE_FIREBASE_STORAGE_BUCKET = device-streaming-9dc16a46.firebasestorage.app
+VITE_FIREBASE_MESSAGING_SENDER_ID = 227467608009
+VITE_FIREBASE_APP_ID = 1:227467608009:web:60cb14daf673046be23218
+```
 
+### Étape 3: Déclencher un Nouveau Build
+- Après avoir ajouté toutes les variables, allez dans **Deploys**
+- Cliquez **Trigger deploy** → **Deploy site**
+
+---
+
+## ⏱️ Timeline Automatique Après Configuration
+
+Une fois les variables configurées (automatique ou manuelle):
+
+1. **Build automatique** se déclenche
+2. **Variables Firebase** sont injectées
+3. **Déploiement** en production (2-5 minutes)
+
+---
+
+## ✅ Vérification Finale
+
+Une fois déployé, vérifiez:
+
+1. https://fichier-global.netlify.app
+2. Appuyez **F12** → Console:
 ```
 ✅ Firebase initialized successfully
+✅ Configuration Firebase valide
 ```
 
 ---
 
-## 📄 Fichiers Modifiés
+## 📄 Fichiers Créés/Modifiés
 
-- ✅ `netlify.toml` - Variables d'environnement automatiques
+- ✅ `netlify.toml` - Variables supprimées pour sécurité
+- ✅ `start-firebase.sh` - ID projet générique
+- ✅ `setup-netlify-env.sh` - **NOUVEAU:** Script d'automatisation complète
 - ✅ Poussé vers GitHub
 - ✅ Webhook Netlify déclenché
 
