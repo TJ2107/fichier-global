@@ -16,8 +16,27 @@ import { GlobalFileRow } from '../types';
 
 const COLLECTION_NAME = 'fichierGlobal';
 
+// Vérifier si Firebase est disponible
+const isFirebaseAvailable = () => {
+  return db !== null && db !== undefined;
+};
+
+// Fonction utilitaire pour gérer les erreurs Firebase
+const handleFirebaseError = (error: any, operation: string) => {
+  console.error(`❌ Erreur Firebase lors de ${operation}:`, error);
+  if (error.code) {
+    console.error(`Code d'erreur: ${error.code}`);
+  }
+  throw error;
+};
+
 // Sauvegarde ou mise à jour d'une ligne de données
 export const saveRowToFirestore = async (row: GlobalFileRow): Promise<string> => {
+  if (!isFirebaseAvailable()) {
+    console.warn('⚠️ Firebase non disponible, sauvegarde locale uniquement');
+    return row.id || 'local-' + Date.now();
+  }
+
   try {
     const dataWithTimestamp = {
       ...row,
@@ -36,24 +55,32 @@ export const saveRowToFirestore = async (row: GlobalFileRow): Promise<string> =>
     const docRef = await addDoc(collection(db, COLLECTION_NAME), dataWithTimestamp);
     return docRef.id;
   } catch (error) {
-    console.error('Erreur lors de la sauvegarde à Firestore:', error);
-    throw error;
+    return handleFirebaseError(error, 'la sauvegarde');
   }
 };
 
 // Sauvegarde de plusieurs lignes
 export const saveRowsToFirestore = async (rows: GlobalFileRow[]): Promise<void> => {
+  if (!isFirebaseAvailable()) {
+    console.warn('⚠️ Firebase non disponible, sauvegarde locale uniquement');
+    return;
+  }
+
   try {
     const promises = rows.map(row => saveRowToFirestore(row));
     await Promise.all(promises);
   } catch (error) {
-    console.error('Erreur lors de la sauvegarde multiple à Firestore:', error);
-    throw error;
+    return handleFirebaseError(error, 'la sauvegarde multiple');
   }
 };
 
 // Récupération de tous les enregistrements
 export const getAllRowsFromFirestore = async (): Promise<GlobalFileRow[]> => {
+  if (!isFirebaseAvailable()) {
+    console.warn('⚠️ Firebase non disponible, retour de tableau vide');
+    return [];
+  }
+
   try {
     const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
     const rows: GlobalFileRow[] = [];
@@ -70,7 +97,8 @@ export const getAllRowsFromFirestore = async (): Promise<GlobalFileRow[]> => {
 
     return rows;
   } catch (error) {
-    console.error('Erreur lors de la récupération de Firestore:', error);
+    console.warn('⚠️ Erreur lors de la récupération Firestore, retour de tableau vide');
+    console.error(error);
     return [];
   }
 };
@@ -81,6 +109,11 @@ export const getRowsWithFilter = async (
   operator: 'where' | 'orderBy' = 'where',
   value: any
 ): Promise<GlobalFileRow[]> => {
+  if (!isFirebaseAvailable()) {
+    console.warn('⚠️ Firebase non disponible, retour de tableau vide');
+    return [];
+  }
+
   try {
     const constraints: QueryConstraint[] = [];
     if (operator === 'where') {
@@ -103,28 +136,37 @@ export const getRowsWithFilter = async (
 
     return rows;
   } catch (error) {
-    console.error('Erreur lors de la récupération filtrée de Firestore:', error);
+    console.warn('⚠️ Erreur lors de la récupération filtrée, retour de tableau vide');
+    console.error(error);
     return [];
   }
 };
 
 // Suppression d'une ligne
 export const deleteRowFromFirestore = async (rowId: string): Promise<void> => {
+  if (!isFirebaseAvailable()) {
+    console.warn('⚠️ Firebase non disponible, suppression locale uniquement');
+    return;
+  }
+
   try {
     await deleteDoc(doc(db, COLLECTION_NAME, rowId));
   } catch (error) {
-    console.error('Erreur lors de la suppression de Firestore:', error);
-    throw error;
+    return handleFirebaseError(error, 'la suppression');
   }
 };
 
 // Suppression de plusieurs lignes
 export const deleteRowsFromFirestore = async (rowIds: string[]): Promise<void> => {
+  if (!isFirebaseAvailable()) {
+    console.warn('⚠️ Firebase non disponible, suppression locale uniquement');
+    return;
+  }
+
   try {
     const promises = rowIds.map(id => deleteDoc(doc(db, COLLECTION_NAME, id)));
     await Promise.all(promises);
   } catch (error) {
-    console.error('Erreur lors de la suppression multiple de Firestore:', error);
-    throw error;
+    return handleFirebaseError(error, 'la suppression multiple');
   }
 };
