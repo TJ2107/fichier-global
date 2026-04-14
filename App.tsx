@@ -6,6 +6,7 @@ import { DataTable } from './components/DataTable';
 import { LayoutDashboard, Table, Download, FilterX, Upload, Plus, X, Timer, Briefcase, Trash2, Loader2, Save, ClipboardList, CalendarDays, FileUp, Info, Smartphone, Battery, Settings2 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { normalizeRow } from './utils/dataNormalization';
+import { getAllRowsFromFirestore, saveRowsToFirestore, deleteRowsFromFirestore } from './firebase/firestoreService';
 
 // Chargement paresseux
 const Dashboard = lazy(() => import('./components/Dashboard').then(m => ({ default: m.Dashboard })));
@@ -14,58 +15,6 @@ const TTFAnalysis = lazy(() => import('./components/TTFAnalysis').then(m => ({ d
 const GMSheet = lazy(() => import('./components/GMSheet').then(m => ({ default: m.GMSheet })));
 const BatteryTracker = lazy(() => import('./components/BatteryTracker').then(m => ({ default: m.BatteryTracker })));
 const BeltTracker = lazy(() => import('./components/BeltTracker').then(m => ({ default: m.BeltTracker })));
-
-// --- CONFIGURATION INDEXEDDB ---
-const DB_NAME = 'FichierGlobalDB';
-const STORE_NAME = 'dataStore';
-const DB_VERSION = 1;
-
-const openDB = (): Promise<IDBDatabase> => {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = (event) => {
-      const db = (event.target as IDBOpenDBRequest).result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME);
-      }
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-const saveToDB = async (data: GlobalFileRow[]) => {
-  const db = await openDB();
-  return new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.put(data, 'mainData');
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
-};
-
-const loadFromDB = async (): Promise<GlobalFileRow[] | null> => {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readonly');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.get('mainData');
-    request.onsuccess = () => resolve(request.result || null);
-    request.onerror = () => reject(request.error);
-  });
-};
-
-const clearDB = async () => {
-  const db = await openDB();
-  return new Promise<void>((resolve, reject) => {
-    const transaction = db.transaction(STORE_NAME, 'readwrite');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.clear();
-    request.onsuccess = () => resolve();
-    request.onerror = () => reject(request.error);
-  });
-};
 
 const applyBusinessRules = (row: GlobalFileRow): GlobalFileRow => {
   const newRow = { ...row };
@@ -157,12 +106,13 @@ const App: React.FC = () => {
     let isMounted = true;
     const initData = async () => {
       try {
-        const storedData = await loadFromDB();
+        const firestoreData = await getAllRowsFromFirestore();
         if (isMounted) {
-          if (storedData && storedData.length > 0) setData(storedData);
+          if (firestoreData && firestoreData.length > 0) setData(firestoreData);
           setIsLoading(false);
         }
       } catch (error) {
+        console.error('Erreur lors du chargement de Firestore:', error);
         if (isMounted) setIsLoading(false);
       }
     };
@@ -174,7 +124,7 @@ const App: React.FC = () => {
     if (isLoading || data.length === 0) return;
     const timeoutId = setTimeout(async () => {
       setIsSaving(true);
-      try { await saveToDB(data); } catch (e) {} finally { setIsSaving(false); }
+      try { await saveRowsToFirestore(data); } catch (e) { console.error('Erreur auto-save:', e); } finally { setIsSaving(false); }
     }, 2000);
     return () => clearTimeout(timeoutId);
   }, [data, isLoading]);
@@ -184,7 +134,7 @@ const App: React.FC = () => {
     setIsUploadModalOpen(false);
     if (data.length === 0) {
       setData(processedData);
-      saveToDB(processedData);
+      saveRowsToFirestore(processedData).catch(e => console.error('Erreur save:', e));
     } else {
       setPendingData(processedData);
       setIsImportModalOpen(true);
@@ -245,10 +195,18 @@ const App: React.FC = () => {
 
   const resetApplication = async () => {
     if (window.confirm("Tout effacer définitivement ?")) {
-      setData([]);
-      setFilters({});
-      setActiveTab('data');
-      await clearDB();
+      try {
+        const allIds = data.map(row => row.id).filter(Boolean) as string[];
+        if (allIds.length > 0) {
+          await deleteRowsFromFirestore(allIds);
+        }
+        setData([]);
+        setFilters({});
+        setActiveTab('data');
+      } catch (error) {
+        console.error('Erreur lors de la suppression:', error);
+        alert('Erreur lors de la suppression des données');
+      }
     }
   };
 
