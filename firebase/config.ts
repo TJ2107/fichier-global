@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
+import { getFirestore, enableIndexedDbPersistence, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 
 // Configuration Firebase - Variables d'environnement uniquement
@@ -42,21 +42,37 @@ let auth: any = null;
 if (validateFirebaseConfig(firebaseConfig)) {
   try {
     app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
 
-    // Activer la persistance locale (synchronisation offline)
-    enableIndexedDbPersistence(db).catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.warn('⚠️ Plusieurs onglets ouverts, persistance désactivée');
-      } else if (err.code === 'unimplemented') {
-        console.warn('⚠️ Navigateur ne supporte pas la persistance');
-      }
+    // Utiliser la nouvelle API de cache persistant (remplace enableIndexedDbPersistence déprécié)
+    db = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+      })
     });
 
-    console.log('✅ Firebase initialisé avec succès');
+    auth = getAuth(app);
+
+    console.log('✅ Firebase initialisé avec succès (cache persistant moderne)');
   } catch (error) {
     console.error('❌ Erreur lors de l\'initialisation Firebase:', error);
+    // Fallback vers l'ancienne méthode si la nouvelle échoue
+    try {
+      db = getFirestore(app);
+      auth = getAuth(app);
+
+      // Activer la persistance locale (synchronisation offline) - méthode dépréciée mais fonctionnelle
+      enableIndexedDbPersistence(db).catch((err) => {
+        if (err.code === 'failed-precondition') {
+          console.warn('⚠️ Plusieurs onglets ouverts, persistance désactivée');
+        } else if (err.code === 'unimplemented') {
+          console.warn('⚠️ Navigateur ne supporte pas la persistance');
+        }
+      });
+
+      console.log('✅ Firebase initialisé avec succès (fallback vers méthode dépréciée)');
+    } catch (fallbackError) {
+      console.error('❌ Échec du fallback Firebase:', fallbackError);
+    }
   }
 } else {
   console.warn('⚠️ Firebase non configuré - mode démo activé');
