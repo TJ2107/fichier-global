@@ -33,7 +33,7 @@ L'application démarrera sur **http://localhost:3000**
 ### Vérifiez dans Firebase Console:
 
 1. Allez sur: https://console.firebase.google.com
-2. Sélectionnez votre projet: `device-streaming-9dc16a46`
+2. Sélectionnez votre projet: `[Votre_ID_Projet_Firebase]`
 3. Cliquez sur **Firestore Database**
 4. Vous verrez la collection `fichierGlobal` avec vos documents
 

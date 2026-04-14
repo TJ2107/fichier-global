@@ -47,7 +47,7 @@
 
 📊 STATUT FINAL:
 
-  Projet Firebase  : device-streaming-9dc16a46
+  Projet Firebase  : [Votre_ID_Projet_Firebase]
   Collection       : fichierGlobal
   Synchronisation  : Temps réel ✨
   Offline          : Activé 📴

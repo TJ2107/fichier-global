@@ -16,12 +16,12 @@ Les variables Firebase ne sont pas définies sur Netlify → Écran blanc en pro
 3. Ajoutez ces 6 variables:
 
 ```
-VITE_FIREBASE_API_KEY = AIzaSyBl33Ta3P7lkLmpKd7erjZhh5TqqBn4vHA
-VITE_FIREBASE_AUTH_DOMAIN = device-streaming-9dc16a46.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID = device-streaming-9dc16a46
-VITE_FIREBASE_STORAGE_BUCKET = device-streaming-9dc16a46.firebasestorage.app
-VITE_FIREBASE_MESSAGING_SENDER_ID = 227467608009
-VITE_FIREBASE_APP_ID = 1:227467608009:web:60cb14daf673046be23218
+VITE_FIREBASE_API_KEY = [Votre_API_Key_Firebase]
+VITE_FIREBASE_AUTH_DOMAIN = [Votre_Domaine_Auth_Firebase]
+VITE_FIREBASE_PROJECT_ID = [Votre_ID_Projet_Firebase]
+VITE_FIREBASE_STORAGE_BUCKET = [Votre_Bucket_Stockage_Firebase]
+VITE_FIREBASE_MESSAGING_SENDER_ID = [Votre_ID_Expediteur_Messaging]
+VITE_FIREBASE_APP_ID = [Votre_ID_Application_Firebase]
 ```
 
 ### Étape 3: Redéployer

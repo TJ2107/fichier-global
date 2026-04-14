@@ -119,9 +119,9 @@ bash start-firebase.sh        # Setup complet
 ## 🔐 Clés Firebase Intégrées
 
 ```
-Project:  device-streaming-9dc16a46
-Domain:   device-streaming-9dc16a46.firebaseapp.com
-Bucket:   device-streaming-9dc16a46.firebasestorage.app
+Project:  [Votre_ID_Projet_Firebase]
+Domain:   [Votre_Domaine_Auth_Firebase]
+Bucket:   [Votre_Bucket_Stockage_Firebase]
 Collection: fichierGlobal
 ```
 
@@ -169,7 +169,7 @@ Build Size .......................... ✅ 1.2MB gzipped
 ```
 ┌─────────────────────────────────────────┐
 │     Firebase Firestore Cloud            │
-│   (device-streaming-9dc16a46)          │
+│   ([Votre_ID_Projet_Firebase])          │
 │      Collection: fichierGlobal         │
 └──────────────┬──────────────────────────┘
                │ Sync bidirectionnelle

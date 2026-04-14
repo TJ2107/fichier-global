@@ -28,10 +28,10 @@
 ## 🔗 Votre Projet Firebase
 
 ```
-Project ID:          device-streaming-9dc16a46
-Auth Domain:         device-streaming-9dc16a46.firebaseapp.com
-Database URL:        https://device-streaming-9dc16a46.firebaseio.com
-Storage Bucket:      device-streaming-9dc16a46.firebasestorage.app
+Project ID:          [Votre_ID_Projet_Firebase]
+Auth Domain:         [Votre_Domaine_Auth_Firebase]
+Database URL:        https://[Votre_ID_Projet_Firebase].firebaseio.com
+Storage Bucket:      [Votre_Bucket_Stockage_Firebase]
 Collection Name:     fichierGlobal
 ```
 

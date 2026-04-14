@@ -49,14 +49,29 @@ echo "✅ Site sélectionné: $SITE_ID"
 # Configuration des variables d'environnement
 echo ""
 echo "🔑 Configuration des variables Firebase..."
+echo ""
+echo "⚠️  ATTENTION: Vous devez fournir vos propres valeurs Firebase."
+echo "   Ne partagez jamais ces valeurs dans des fichiers publics!"
+echo ""
+
+# Demander les valeurs à l'utilisateur
+echo "Entrez vos valeurs Firebase (elles ne seront pas sauvegardées):"
+echo ""
+
+read -p "VITE_FIREBASE_API_KEY: " API_KEY
+read -p "VITE_FIREBASE_AUTH_DOMAIN: " AUTH_DOMAIN
+read -p "VITE_FIREBASE_PROJECT_ID: " PROJECT_ID
+read -p "VITE_FIREBASE_STORAGE_BUCKET: " STORAGE_BUCKET
+read -p "VITE_FIREBASE_MESSAGING_SENDER_ID: " MESSAGING_SENDER_ID
+read -p "VITE_FIREBASE_APP_ID: " APP_ID
 
 VARIABLES=(
-    "VITE_FIREBASE_API_KEY:AIzaSyBl33Ta3P7lkLmpKd7erjZhh5TqqBn4vHA"
-    "VITE_FIREBASE_AUTH_DOMAIN:device-streaming-9dc16a46.firebaseapp.com"
-    "VITE_FIREBASE_PROJECT_ID:device-streaming-9dc16a46"
-    "VITE_FIREBASE_STORAGE_BUCKET:device-streaming-9dc16a46.firebasestorage.app"
-    "VITE_FIREBASE_MESSAGING_SENDER_ID:227467608009"
-    "VITE_FIREBASE_APP_ID:1:227467608009:web:60cb14daf673046be23218"
+    "VITE_FIREBASE_API_KEY:$API_KEY"
+    "VITE_FIREBASE_AUTH_DOMAIN:$AUTH_DOMAIN"
+    "VITE_FIREBASE_PROJECT_ID:$PROJECT_ID"
+    "VITE_FIREBASE_STORAGE_BUCKET:$STORAGE_BUCKET"
+    "VITE_FIREBASE_MESSAGING_SENDER_ID:$MESSAGING_SENDER_ID"
+    "VITE_FIREBASE_APP_ID:$APP_ID"
 )
 
 for var in "${VARIABLES[@]}"; do
